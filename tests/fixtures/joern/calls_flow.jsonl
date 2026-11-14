@@ -1,0 +1,5 @@
+{"t":"node","id":1,"kind":"METHOD","path":"a.py","qname":"a.f","sig":"1","line":[1,4]}
+{"t":"node","id":2,"kind":"METHOD","path":"a.py","qname":"a.g","sig":"1","line":[6,9]}
+{"t":"node","id":3,"kind":"METHOD","path":"a.py","qname":"a.h","sig":"1","line":[11,14]}
+{"t":"edge","src":1,"dst":2,"kind":"CALL"}
+{"t":"edge","src":2,"dst":3,"kind":"REACHING_DEF"}

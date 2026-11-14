@@ -1,0 +1,17 @@
+source:
+  - "os.Getenv"
+  - "*.FormValue"
+  - "*.Query"
+  - "json.Unmarshal"
+sink:
+  - "exec.Command"
+  - "*.Exec"
+  - "*.QueryRow"
+  - "log.*"
+  - "http.Post"
+guard:
+  - "*.Validate"
+  - "Validate*"
+external:
+  - "fmt.*"
+  - "os.*"

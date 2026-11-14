@@ -1,0 +1,16 @@
+# Evaluation corpus. Mutation entries are generated from eval/mutations/<name>.py.
+# Real entries point at a pinned repo and carry hand-checked expectations:
+#   {id, type: real, lang, repo: <path>, base: <sha>, head: <sha>, expected: [{kind, src, sink}]}
+entries:
+  - id: mut-remove-validator
+    type: mutation
+    mutation: remove_validator
+    lang: python
+  - id: mut-new-caller
+    type: mutation
+    mutation: new_caller
+    lang: python
+  - id: refactor-rename-local
+    type: refactor
+    mutation: pure_refactor
+    lang: python

@@ -16,6 +16,9 @@ dependencies = [
   "pyyaml",
 ]
 
+[project.scripts]
+witness = "witness.cli:main"
+
 [project.optional-dependencies]
 anthropic = ["anthropic"]
 
@@ -28,6 +31,9 @@ packages = ["src/witness"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+markers = [
+  "joern: needs a real Joern install",
+]
 
 [tool.uv]
 # cryptography 49+ has no wheel for this toolchain; the local cargo is too old to build it from source.

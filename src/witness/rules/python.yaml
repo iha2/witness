@@ -1,0 +1,21 @@
+source:
+  - "request.args.get"
+  - "request.form.get"
+  - "request.json.get"
+  - "json.loads"
+  - "pickle.loads"
+  - "yaml.load"
+  - "open"
+sink:
+  - "subprocess.*"
+  - "os.system"
+  - "os.popen"
+  - "cursor.execute"
+  - "logging.*"
+  - "logger.*"
+  - "requests.post"
+  - "requests.put"
+external:
+  - "os.*"
+  - "sys.*"
+  - "json.*"

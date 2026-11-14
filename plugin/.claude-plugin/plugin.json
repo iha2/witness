@@ -1,0 +1,6 @@
+{
+  "name": "witness",
+  "version": "0.1.0",
+  "description": "Review a pull request by its data-flow changes: which values reach which sinks, and which guards moved.",
+  "license": "Apache-2.0"
+}

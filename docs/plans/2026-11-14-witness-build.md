@@ -70,12 +70,14 @@ flowchart LR
   T2 --> T8
   T2 --> T9
   T2 --> T10
+  T8 --> T9
+  T5 --> T15
 ```
 
 ## Engine and model
 
 App type: library. Categories: deep, state, encoding.
-**Probe entry:** call=witness.model.Graph.has_path
+**Probe entry:** call=witness.engines.joern.parse_export
 
 ### T2 Graph model · Complexity 5 · Est. context 30k
 **Owns:** src/witness/model.py, tests/test_model.py
@@ -188,6 +190,7 @@ e.g. same key both sides -> {0: (0, "exact", 1.0)}; path a.py renamed b.py -> {0
 **Produces:** diff.flow_diff(base: Graph, head: Graph, m: Match) -> list[FlowChange]
 e.g. base request.coupon→validate_coupon→db.insert, head request.coupon→db.insert -> [FlowChange(kind="guard_bypassed", src="request.coupon", sink="db.orders.insert", guard="validate_coupon", ...)]
 e.g. new CALLS edge checkout.total→discount.apply -> one FlowChange(kind="new_caller")
+e.g. flow_diff(g, g, {i: (i, "exact", 1.0) for i in range(len(g.nodes))}) -> []
 **Review Focus:** design §7. `test_swap_symmetry` (hypothesis): swapping base/head turns added_flow into removed_flow and guard_bypassed into guard_added; `test_pure_rename_no_change`; `test_depth_cap_7`: an 8-step path is not reported; `test_path_cap_200`: a 300-path fan-out ends and sets confidence < 1.0.
 
 ### T10 Hunk mapper and reducer · Complexity 6 · Est. context 38k
@@ -248,7 +251,7 @@ e.g. compare(["a","b"], {"b": ("s","k"), "c": ("s","k")}) -> {"new": ["c"], "res
 ## Surfaces
 
 App type: CLI + MCP server. Categories: protocol, encoding, state, file.
-**Probe entry:** run=python -m witness · serve=witness.mcp_server.create_server
+**Probe entry:** run=python -m witness
 
 ### T14 Outputs · Complexity 5 · Est. context 36k
 **Owns:** src/witness/render.py, schema/witness.report.v1.json, tests/test_render.py
@@ -272,6 +275,7 @@ e.g. to_markdown(sample report) starts with "# Witness report ·" and has sectio
 **Consumes:** render.to_markdown(report) (T14) · scope.find_scope(repo, base, head, hunks, hops, max_files) (T5)
 **Produces:** pipeline.analyze(repo: Path, ref: str | None, base: str | None, head: str | None, no_llm: bool, on_event: Callable[[dict], None]) -> dict · cli.main(argv: list[str]) -> int
 e.g. main(["analyze", "--base", "HEAD~1", "--head", "HEAD", "--no-llm", "--format", "json"]) -> 0 and stdout is a report.json
+e.g. analyze(Path("."), None, "HEAD~1", "HEAD", True, events.append) -> {"schema": "witness.report.v1", "hunks": [...], "changes": [...], "coverage": {...}}; events[0]["type"] == "hunks"
 **Review Focus:** `test_no_java_lists_hunks_exit_4`: Joern missing prints the hunk list and "run witness doctor", exit 4; `test_events_order`: on_event gets "hunks" before "deep_ready"; `test_bad_flag_exit_2`; `test_doctor_install_needs_yes`: without `--yes` nothing is downloaded.
 **Notes:** pipeline takes its stages as injectable defaults so tests use fakes.
 

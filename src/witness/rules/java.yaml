@@ -1,0 +1,21 @@
+source:
+  - "*.getParameter"
+  - "*.getHeader"
+  - "System.getenv"
+  - "*.readLine"
+  - "*.readObject"
+sink:
+  - "*.executeQuery"
+  - "*.executeUpdate"
+  - "Runtime.exec"
+  - "*.exec"
+  - "*.getWriter"
+  - "*.sendRedirect"
+  - "logger.*"
+guard:
+  - "Objects.requireNonNull"
+  - "*.isValid"
+  - "Validate.*"
+external:
+  - "java.*"
+  - "javax.*"

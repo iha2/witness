@@ -1,0 +1,22 @@
+source:
+  - "scanf"
+  - "fgets"
+  - "gets"
+  - "read"
+  - "recv"
+  - "getenv"
+sink:
+  - "system"
+  - "popen"
+  - "execve"
+  - "execl"
+  - "sprintf"
+  - "strcpy"
+  - "printf"
+  - "send"
+  - "write"
+guard:
+  - "assert"
+  - "snprintf"
+external:
+  - "std::*"

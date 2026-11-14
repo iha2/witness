@@ -1,0 +1,22 @@
+source:
+  - "req.body"
+  - "req.query"
+  - "req.params"
+  - "process.env"
+  - "JSON.parse"
+  - "fs.readFile*"
+sink:
+  - "res.send"
+  - "res.json"
+  - "child_process.*"
+  - "*.query"
+  - "console.log"
+  - "fetch"
+  - "eval"
+guard:
+  - "*.validate"
+  - "*.sanitize"
+  - "isValid*"
+external:
+  - "fs.*"
+  - "path.*"

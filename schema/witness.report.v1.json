@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "witness/v1",
+  "title": "Witness report v1",
+  "type": "object",
+  "required": ["meta", "coverage", "overview", "hunks", "flow_changes", "evidence"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["schema", "title", "base", "head"],
+      "properties": {
+        "schema": {"const": "witness/v1"},
+        "repo": {"type": "string"},
+        "pr": {"type": ["integer", "string"]},
+        "title": {"type": "string"},
+        "base": {"type": "string"},
+        "head": {"type": "string"},
+        "engine": {"type": "string"},
+        "language": {"type": "string"},
+        "files_in_scope": {"type": "integer"},
+        "model": {"type": "string"}
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "unanalysed": {"type": "integer"},
+        "unanalysed_files": {"type": "array", "items": {"type": "string"}},
+        "grounded": {"type": "integer"},
+        "total": {"type": "integer"},
+        "notes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "overview": {
+      "type": "object",
+      "required": ["look_first"],
+      "properties": {
+        "look_first": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kind", "text", "hunk"],
+            "properties": {
+              "kind": {"type": "string"},
+              "text": {"type": "string"},
+              "hunk": {"type": "string"}
+            }
+          }
+        },
+        "graph": {"$ref": "#/$defs/graph"}
+      }
+    },
+    "description_check": {
+      "type": "object",
+      "properties": {
+        "described_not_found": {"type": "array", "items": {"type": "string"}},
+        "found_not_described": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text"],
+            "properties": {"text": {"type": "string"}, "hunk": {"type": "string"}}
+          }
+        }
+      }
+    },
+    "hunks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path", "start", "end", "title", "kinds", "explanation"],
+        "properties": {
+          "id": {"type": "string"},
+          "path": {"type": "string"},
+          "start": {"type": "integer"},
+          "end": {"type": "integer"},
+          "title": {"type": "string"},
+          "kinds": {"type": "array", "items": {"type": "string"}},
+          "diff": {"type": "string"},
+          "templated": {"type": "boolean"},
+          "note": {"type": "string"},
+          "slice_ref": {"type": "string"},
+          "graph": {"$ref": "#/$defs/graph"},
+          "explanation": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["text", "cites"],
+              "properties": {
+                "text": {"type": "string"},
+                "cites": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+              }
+            }
+          }
+        }
+      }
+    },
+    "flow_changes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "src", "sink", "hunks"],
+        "properties": {
+          "kind": {
+            "enum": ["guard_bypassed", "guard_added", "added_flow", "removed_flow",
+                     "rerouted", "new_caller", "lost_caller"]
+          },
+          "src": {"type": "string"},
+          "sink": {"type": "string"},
+          "guard": {"type": ["string", "null"]},
+          "hunks": {"type": "array", "items": {"type": "string"}},
+          "confidence": {"type": "number"},
+          "path": {"type": "string"},
+          "line": {"type": "integer"},
+          "head_steps": {"type": "array", "items": {"$ref": "#/$defs/step"}}
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text"],
+        "properties": {"id": {"type": "string"}, "text": {"type": "string"}}
+      }
+    }
+  },
+  "$defs": {
+    "step": {
+      "type": "object",
+      "required": ["path", "line", "text"],
+      "properties": {
+        "path": {"type": "string"},
+        "line": {"type": "integer"},
+        "text": {"type": "string"}
+      }
+    },
+    "side": {
+      "type": "object",
+      "required": ["nodes", "edges"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "label"],
+            "properties": {
+              "id": {"type": "string"},
+              "label": {"type": "string"},
+              "shape": {"enum": ["node", "source", "sink", "cond"]}
+            }
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["src", "dst"],
+            "properties": {
+              "src": {"type": "string"},
+              "dst": {"type": "string"},
+              "status": {"enum": ["same", "added", "removed"]},
+              "label": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "graph": {
+      "type": "object",
+      "required": ["root", "before", "after"],
+      "properties": {
+        "root": {"type": "string"},
+        "before": {"$ref": "#/$defs/side"},
+        "after": {"$ref": "#/$defs/side"}
+      }
+    }
+  }
+}
